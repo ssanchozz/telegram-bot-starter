@@ -1,18 +1,19 @@
 package com.ssanchozzz.telebreak.rest
 
+import com.ssanchozzz.telebreak.domain.BreakCalculator
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import java.time.LocalDateTime.of
 
 internal class TelegramControllerTest {
 
-    private val tc = TelegramController()
+    private val bc = BreakCalculator()
 
     @Test
     fun testClassesNotYetStarted() {
         Assertions.assertEquals(
                 "Classes not yet started",
-                tc.getClosestBreak(of(2021, 10, 7, 8, 0))
+                bc.getClosestBreakMessage(of(2021, 10, 7, 8, 0))
         )
     }
 
@@ -20,7 +21,7 @@ internal class TelegramControllerTest {
     internal fun testNoClassesToday() {
         Assertions.assertEquals(
                 "No classes today",
-                tc.getClosestBreak(of(2021, 10, 9, 8, 0))
+                bc.getClosestBreakMessage(of(2021, 10, 9, 8, 0))
         )
     }
 
@@ -28,7 +29,7 @@ internal class TelegramControllerTest {
     internal fun testClassesWereFinishedForToday() {
         Assertions.assertEquals(
                 "Classes were finished for today",
-                tc.getClosestBreak(of(2021, 10, 7, 17, 0))
+                bc.getClosestBreakMessage(of(2021, 10, 7, 17, 0))
         )
     }
 
@@ -36,7 +37,7 @@ internal class TelegramControllerTest {
     internal fun testNextBreakFirstBuildingSchedule() {
         Assertions.assertEquals(
                 "Next break is in 15 minutes",
-                tc.getClosestBreak(of(2021, 10, 7, 9, 30))
+                bc.getClosestBreakMessage(of(2021, 10, 7, 9, 30))
         )
     }
 
@@ -44,7 +45,7 @@ internal class TelegramControllerTest {
     internal fun testNextBreakSecondBuildingSchedule() {
         Assertions.assertEquals(
                 "Next break is in 40 minutes",
-                tc.getClosestBreak(of(2021, 10, 6, 9, 30))
+                bc.getClosestBreakMessage(of(2021, 10, 6, 9, 30))
         )
     }
 
@@ -52,7 +53,7 @@ internal class TelegramControllerTest {
     internal fun testIsBreakNowSecondBuildingSchedule() {
         Assertions.assertEquals(
                 "It's a break now!",
-                tc.getClosestBreak(of(2021, 10, 6, 9, 20))
+                bc.getClosestBreakMessage(of(2021, 10, 6, 9, 20))
         )
     }
 }
