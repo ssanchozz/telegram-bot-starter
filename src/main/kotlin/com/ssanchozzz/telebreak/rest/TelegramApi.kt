@@ -1,6 +1,10 @@
 package com.ssanchozzz.telebreak.rest
 
 import com.ssanchozzz.telebreak.domain.BreakCalculator
+import com.ssanchozzz.telebreak.domain.Message
+import com.ssanchozzz.telebreak.domain.MessageResponse
+import com.ssanchozzz.telebreak.domain.UpdateResponse
+import com.ssanchozzz.telebreak.domain.UserResponse
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.InitializingBean
 import org.springframework.beans.factory.annotation.Value
@@ -34,12 +38,16 @@ class TelegramApi(
     }
 
     private fun getUpdates(): Unit? = try {
+        log.info("Making a request to $url with offset $offset")
+
         val response = restTemplate.exchange(
                 "$url$token/getUpdates?offset=$offset",
                 GET,
                 null,
                 UpdateResponse::class.java
         )
+        log.info("Got a response from $url, status code ${response.statusCode}")
+
         log.debug(response.toString())
         val result = response.body!!.result
         result.forEach {
@@ -57,7 +65,7 @@ class TelegramApi(
                     try {
                         sendMessage(
                                 chat.id,
-                                getResponseMessage(message.text, prefix)
+                                getResponseMessage(message, prefix)
                         ).let { sentMessage ->
                             log.debug(sentMessage.toString())
                         }
@@ -75,12 +83,15 @@ class TelegramApi(
         getUpdates()
     }
 
-    private fun getResponseMessage(text: String, prefix: String) = if (text.length > prefix.length) {
-        val substring = text.substring(prefix.length + 1, prefix.length + 17)
-        val dateTimeToCheck = LocalDateTime.parse(substring, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"))
-        breakCalculator.getClosestBreakMessage(dateTimeToCheck)
-    } else {
-        breakCalculator.getClosestBreakMessage()
+    private fun getResponseMessage(message: Message, prefix: String): String = message.let {
+        val text = message.text!!
+        if (text.length > prefix.length) {
+            val substring = text.substring(prefix.length + 1, prefix.length + 17)
+            val dateTimeToCheck = LocalDateTime.parse(substring, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"))
+            breakCalculator.getClosestBreakMessage(dateTimeToCheck)
+        } else {
+            breakCalculator.getClosestBreakMessage(message.date)
+        }
     }
 
     private fun sendMessage(chatId: Int, message: String) = restTemplate.exchange(

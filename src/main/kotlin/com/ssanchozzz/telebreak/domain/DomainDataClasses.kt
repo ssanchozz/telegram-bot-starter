@@ -1,4 +1,4 @@
-package com.ssanchozzz.telebreak.rest
+package com.ssanchozzz.telebreak.domain
 
 import com.fasterxml.jackson.annotation.JsonProperty
 

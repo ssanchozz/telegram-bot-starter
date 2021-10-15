@@ -1,9 +1,17 @@
 package com.ssanchozzz.telebreak.domain
 
 import org.springframework.stereotype.Component
-import java.time.DayOfWeek.*
+import java.time.DayOfWeek.FRIDAY
+import java.time.DayOfWeek.MONDAY
+import java.time.DayOfWeek.SATURDAY
+import java.time.DayOfWeek.SUNDAY
+import java.time.DayOfWeek.THURSDAY
+import java.time.DayOfWeek.TUESDAY
+import java.time.DayOfWeek.WEDNESDAY
+import java.time.Instant
 import java.time.LocalDateTime
 import java.time.LocalTime.of
+import java.time.ZoneId
 import java.time.temporal.ChronoUnit.MINUTES
 
 @Component
@@ -39,9 +47,9 @@ class BreakCalculator {
             THURSDAY to firstBuildingSchedule
     )
 
-    fun getClosestBreakMessage(): String {
-        return getClosestBreakMessage(LocalDateTime.now())
-    }
+    fun getClosestBreakMessage(dateTime: Int): String = getClosestBreakMessage(
+            LocalDateTime.ofInstant(Instant.ofEpochSecond(dateTime.toLong()), ZoneId.of("Europe/Moscow"))
+    )
 
     internal fun getClosestBreakMessage(referenceDateTime: LocalDateTime): String {
         if (setOf(FRIDAY, SATURDAY, SUNDAY).contains(referenceDateTime.dayOfWeek)) {
