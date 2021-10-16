@@ -28,6 +28,7 @@ class TelegramApi(
 
     override fun afterPropertiesSet() {
         getMe()
+        log.info("API initialized successfully!")
         getUpdates()
     }
 
