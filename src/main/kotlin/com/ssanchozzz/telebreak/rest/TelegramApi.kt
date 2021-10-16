@@ -10,11 +10,14 @@ import org.springframework.beans.factory.InitializingBean
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.web.client.RestTemplateBuilder
 import org.springframework.http.HttpMethod.GET
+import org.springframework.scheduling.annotation.EnableScheduling
+import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
 @Component
+@EnableScheduling
 class TelegramApi(
         @Value("\${telegram.bot.url}") val url: String,
         @Value("\${telegram.bot.token}") val token: String,
@@ -29,7 +32,6 @@ class TelegramApi(
     override fun afterPropertiesSet() {
         getMe()
         log.info("API initialized successfully!")
-        getUpdates()
     }
 
     private fun getMe() {
@@ -38,6 +40,7 @@ class TelegramApi(
         log.debug(user.toString())
     }
 
+    @Scheduled(fixedDelay = 1000)
     private fun getUpdates(): Unit? = try {
         log.info("Making a request to $url with offset $offset")
 
@@ -68,9 +71,8 @@ class TelegramApi(
         }
 
         result.lastOrNull()?.let { update -> offset = update.id + 1 }
-
-    } finally {
-        getUpdates()
+    } catch (e: Exception) {
+        log.info("Failed to process request", e)
     }
 
     private fun processPerifCommand(perifCommand: String, message: Message) {

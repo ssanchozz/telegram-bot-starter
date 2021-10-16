@@ -11,4 +11,7 @@ class TelegramController(
 ) {
     @GetMapping("closestBreak")
     fun getClosestBreak(): String = breakCalculator.getClosestBreakMessage(LocalDateTime.now())
+
+    @GetMapping("/")
+    fun ok(): String = "OK"
 }
