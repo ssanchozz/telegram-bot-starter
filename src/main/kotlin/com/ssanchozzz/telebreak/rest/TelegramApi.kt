@@ -51,29 +51,18 @@ class TelegramApi(
         log.debug(response.toString())
         val result = response.body!!.result
         result.forEach {
-            val message = it.message
-            log.debug(message.toString())
-            if (message == null) {
-                return@forEach
-            }
-            val prefix = "/perif"
+            val message = it.message ?: return@forEach
+
+            log.info("Received a message, processing: $message")
+
+            val perifCommand = "/perif"
             if (message.text == null) {
                 return@forEach
             }
-            if (message.text.startsWith(prefix)) {
-                message.chat?.let { chat ->
-                    try {
-                        sendMessage(
-                                chat.id,
-                                getResponseMessage(message, prefix)
-                        ).let { sentMessage ->
-                            log.debug(sentMessage.toString())
-                        }
-                    } catch (e: Exception) {
-                        log.error("An exception occurred", e)
-                    }
-                }
-
+            if (message.text.startsWith(perifCommand)) {
+                processPerifCommand(perifCommand, message)
+            } else if (message.text.startsWith("/")) {
+                log.info("Unknown command $message")
             }
         }
 
@@ -81,6 +70,23 @@ class TelegramApi(
 
     } finally {
         getUpdates()
+    }
+
+    private fun processPerifCommand(perifCommand: String, message: Message) {
+        log.info("Processing $perifCommand command")
+        message.chat?.let { chat ->
+            try {
+                sendMessage(
+                    chat.id,
+                    getResponseMessage(message, perifCommand)
+                ).let { sentMessage ->
+                    log.debug(sentMessage.toString())
+                }
+                log.info("$perifCommand command processed successfully")
+            } catch (e: Exception) {
+                log.error("An exception occurred while processing command $perifCommand", e)
+            }
+        }
     }
 
     private fun getResponseMessage(message: Message, prefix: String): String = message.let {
