@@ -7,7 +7,7 @@ import java.time.LocalDateTime.of
 
 internal class TelegramControllerTest {
 
-    private val bc = BreakCalculator()
+    private val bc = BreakCalculator("Europe/Moscow")
 
     @Test
     fun testClassesNotYetStarted() {
@@ -36,7 +36,7 @@ internal class TelegramControllerTest {
     @Test
     internal fun testNextBreakFirstBuildingSchedule() {
         Assertions.assertEquals(
-                "Next break is in 15 minutes",
+                "It's class now, next break is in 15 minutes",
                 bc.getClosestBreakMessage(of(2021, 10, 7, 9, 30))
         )
     }
@@ -44,7 +44,7 @@ internal class TelegramControllerTest {
     @Test
     internal fun testNextBreakSecondBuildingSchedule() {
         Assertions.assertEquals(
-                "Next break is in 40 minutes",
+                "It's class now, next break is in 40 minutes",
                 bc.getClosestBreakMessage(of(2021, 10, 6, 9, 30))
         )
     }

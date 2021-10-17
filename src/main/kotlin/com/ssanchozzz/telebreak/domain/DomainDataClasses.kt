@@ -46,3 +46,8 @@ data class Message(
         @JsonProperty("text") val text: String?,
         @JsonProperty("chat") val chat: Chat?
 )
+
+data class Command(
+        @JsonProperty("command") val command: String,
+        @JsonProperty("description") val description: String
+)
