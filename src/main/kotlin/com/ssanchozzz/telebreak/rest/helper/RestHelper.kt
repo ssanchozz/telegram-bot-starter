@@ -1,7 +1,5 @@
 package com.ssanchozzz.telebreak.rest.helper
 
-import com.fasterxml.jackson.core.type.TypeReference
-import com.ssanchozzz.telebreak.rest.helper.JsonHelper.objectMapper
 import org.slf4j.LoggerFactory
 import org.springframework.boot.web.client.RestTemplateBuilder
 import org.springframework.core.ParameterizedTypeReference
@@ -18,21 +16,19 @@ object RestHelper {
         .setReadTimeout(Duration.of(60, ChronoUnit.SECONDS))
         .build()
 
+    @Suppress("UNCHECKED_CAST")
     fun <T> invokeGet(url: String): T {
         log.info("Making a request to $url")
         val response = restTemplate.exchange(
             url,
             HttpMethod.GET,
             null,
-            object : ParameterizedTypeReference<HashMap<String, String>>() {}
+            object : ParameterizedTypeReference<HashMap<String, Any>>() {}
         )
         log.debug(response.toString())
         log.info("Got a response from $url, ok = ${response.body!!["ok"]}")
 
-        return objectMapper.readValue(
-            response.body!!["result"],
-            object : TypeReference<T>() {}
-        )
+        return response.body!!["result"] as T
     }
 }
 
