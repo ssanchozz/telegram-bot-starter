@@ -115,6 +115,12 @@ class BreakCalculator(
 
     internal fun getState(referenceDateTime: LocalDateTime): State = getResult(referenceDateTime).state
 
+    internal fun isBreakNow(): Boolean {
+        val currentDateTime = LocalDateTime.now(ZoneId.of(zone))
+        val state = getState(currentDateTime)
+        return state == State.IS_BREAK_NOW
+    }
+
     internal fun getClosestBreakMessage(referenceDateTime: LocalDateTime): String {
         val result = getResult(referenceDateTime)
         return if (result.messageParams.isEmpty()) {

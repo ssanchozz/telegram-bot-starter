@@ -14,7 +14,7 @@ import java.time.LocalDateTime
 @RestController
 class TelegramController(
     private val breakCalculator: BreakCalculator,
-    private val telegramApi: TelegramApi
+    private val messagesProcessor: MessagesProcessor
 ) {
 
     private val log = LoggerFactory.getLogger(this::class.java)
@@ -33,7 +33,7 @@ class TelegramController(
     )
     fun receiveUpdate(@RequestBody update: Update) {
         log.info("Received an update message to webhook $update")
-        telegramApi.processWebhookUpdate(update)
+        messagesProcessor.processWebhookUpdate(update)
     }
 
     @GetMapping("/")
