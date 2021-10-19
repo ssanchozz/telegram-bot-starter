@@ -16,6 +16,9 @@ data class User(
 
 data class Chat(
     @JsonProperty("id") val id: Int,
+    @JsonProperty("first_name") val firstName: String?,
+    @JsonProperty("last_name") val lastName: String?,
+    @JsonProperty("username") val username: String?,
     @JsonProperty("type") val type: String
 )
 
@@ -27,9 +30,9 @@ data class Update(
 data class Message(
     @JsonProperty("message_id") val id: Int,
     @JsonProperty("from") val user: User,
+    @JsonProperty("chat") val chat: Chat?,
     @JsonProperty("date") val date: Int,
-    @JsonProperty("text") val text: String?,
-    @JsonProperty("chat") val chat: Chat?
+    @JsonProperty("text") val text: String?
 )
 
 data class Command(
