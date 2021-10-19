@@ -4,6 +4,8 @@ import com.ssanchozzz.telebreak.domain.BreakCalculator
 import com.ssanchozzz.telebreak.domain.Message
 import com.ssanchozzz.telebreak.domain.Update
 import com.ssanchozzz.telebreak.rest.helper.Commands.perifCommand
+import kotlinx.coroutines.newSingleThreadContext
+import kotlinx.coroutines.runBlocking
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.InitializingBean
 import org.springframework.beans.factory.annotation.Value
