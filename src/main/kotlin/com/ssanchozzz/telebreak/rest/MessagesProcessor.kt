@@ -4,9 +4,6 @@ import com.ssanchozzz.telebreak.domain.BreakCalculator
 import com.ssanchozzz.telebreak.domain.Message
 import com.ssanchozzz.telebreak.domain.Update
 import com.ssanchozzz.telebreak.rest.helper.Commands.perifCommand
-import com.ssanchozzz.telebreak.rest.helper.getPreSlashedString
-import kotlinx.coroutines.newSingleThreadContext
-import kotlinx.coroutines.runBlocking
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.InitializingBean
 import org.springframework.beans.factory.annotation.Value
@@ -79,7 +76,7 @@ class MessagesProcessor(
 
         val text = message.text
 
-        if (text.startsWith(perifCommand.getPreSlashedString())) {
+        if (text.startsWith(perifCommand.command)) {
             processPerifCommand(message)
         } else if (text.startsWith("/")) {
             log.info("Unknown command $message")
@@ -92,7 +89,7 @@ class MessagesProcessor(
             try {
                 telegramApi.sendMessage(
                     chat.id,
-                    getResponseMessage(message, perifCommand.getPreSlashedString())
+                    getResponseMessage(message, perifCommand.command)
                 ).let { sentMessage ->
                     log.debug(sentMessage.toString())
                 }
