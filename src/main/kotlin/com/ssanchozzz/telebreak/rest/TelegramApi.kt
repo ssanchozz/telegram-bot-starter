@@ -3,9 +3,8 @@ package com.ssanchozzz.telebreak.rest
 import com.ssanchozzz.telebreak.domain.Command
 import com.ssanchozzz.telebreak.domain.Message
 import com.ssanchozzz.telebreak.domain.Update
-import com.ssanchozzz.telebreak.domain.User
-import com.ssanchozzz.telebreak.rest.helper.JsonHelper.objectMapper
 import com.ssanchozzz.telebreak.rest.helper.RestHelper.invokeGet
+import com.ssanchozzz.telebreak.rest.helper.RestHelper.invokePost
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 
@@ -16,12 +15,9 @@ class TelegramApi(
     @Value("\${telegram.bot.token}") val token: String
 ) {
 
-    internal fun getMe() = invokeGet<User>("$url$token/getMe")
+    internal fun getMe() = invokeGet<LinkedHashMap<String, Any>>("$url$token/getMe")
 
-    internal fun setMyCommands(commands: List<Command>) {
-        val jsonCommands = objectMapper.writeValueAsString(commands)
-        invokeGet<Boolean>("$url$token/setMyCommands?commands=$jsonCommands")
-    }
+    internal fun setMyCommands(commands: List<Command>) = invokePost<Boolean, List<Command>>("$url$token/setMyCommands", commands)
 
     internal fun getUpdates(offset: Int) = invokeGet<List<Update>>("$url$token/getUpdates?offset=$offset")
 
