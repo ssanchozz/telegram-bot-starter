@@ -24,7 +24,7 @@ class MessagesProcessor(
 
     private val log = LoggerFactory.getLogger(this::class.java)
 
-    val chatsList: MutableList<Int> = Collections.synchronizedList(mutableListOf())
+    val chatsList: MutableSet<Int> = Collections.synchronizedSet(mutableSetOf())
 
     private var offset: Int = 0
 
@@ -52,11 +52,11 @@ class MessagesProcessor(
         while (true) {
             try {
                 val updates = telegramApi.getUpdates(offset)
-                updates.forEach { update ->
+                updates?.forEach { update ->
                     processUpdate(update)
                 }
 
-                updates.lastOrNull()?.let { update -> offset = update.id + 1 }
+                updates?.lastOrNull()?.let { update -> offset = update.id + 1 }
             } catch (e: Exception) {
                 log.info("Failed to process request", e)
             }

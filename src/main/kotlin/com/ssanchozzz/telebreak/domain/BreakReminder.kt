@@ -25,14 +25,14 @@ class BreakReminder(
             chatWasNotified.computeIfAbsent(it) { false }
         }
 
-        chatWasNotified.forEach { chatIdToNotified ->
-            val chatId = chatIdToNotified.key
-            val wasNotified = chatIdToNotified.value
+        chatWasNotified.forEach { chatIdToNotify ->
+            val chatId = chatIdToNotify.key
+            val wasNotified = chatIdToNotify.value
             val breakNow = breakCalculator.isBreakNow()
 
             if (breakNow && !wasNotified) {
                 log.info("Sending break a notification to $chatId")
-                telegramApi.sendMessage(chatId, "It's break now!")
+                telegramApi.sendMessage(chatId, "It is a break now!")
                 chatWasNotified[chatId] = true
             } else if (!breakNow && wasNotified) {
                 log.info("Setting notified to false for $chatId")

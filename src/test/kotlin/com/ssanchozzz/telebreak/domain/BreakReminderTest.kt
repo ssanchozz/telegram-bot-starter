@@ -33,17 +33,40 @@ internal class BreakReminderTest {
     }
 
     @Test
-    fun checkFirstInvocationSendsNotificationSecondDoesnt() {
+    fun `Check that if the first invocation sends a notification, the second doesn't`() {
         val chatId = 123
         messagesProcessor.chatsList.add(chatId)
 
         every { breakCalculator.isBreakNow() }.returns(true)
         breakReminder.notifyChats()
-        verify { telegramApi.sendMessage(123, "It's break now!") }
+        verify { telegramApi.sendMessage(123, "It is a break now!") }
+        Assertions.assertTrue(breakReminder.chatWasNotified[chatId]!!)
+
+        breakReminder.notifyChats()
         Assertions.assertTrue(breakReminder.chatWasNotified[chatId]!!)
 
         every { breakCalculator.isBreakNow() }.returns(false)
         breakReminder.notifyChats()
         Assertions.assertFalse(breakReminder.chatWasNotified[chatId]!!)
+
+        verify(exactly = 1) { telegramApi.sendMessage(123, "It is a break now!") }
+    }
+
+    @Test
+    fun `Check that if add the same chat id, message to the chat is sent only once`() {
+        val chatId = 123
+        messagesProcessor.chatsList.add(chatId)
+        every { breakCalculator.isBreakNow() }.returns(true)
+
+        breakReminder.notifyChats()
+        messagesProcessor.chatsList.add(chatId)
+        breakReminder.notifyChats()
+        messagesProcessor.chatsList.add(chatId)
+        messagesProcessor.chatsList.add(chatId)
+        breakReminder.notifyChats()
+
+        Assertions.assertEquals(1, messagesProcessor.chatsList.size)
+        Assertions.assertEquals(1, breakReminder.chatWasNotified.size)
+        verify(exactly = 1) { telegramApi.sendMessage(123, "It is a break now!") }
     }
 }

@@ -7,6 +7,7 @@ import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpMethod
 import org.springframework.http.MediaType
+import org.springframework.http.ResponseEntity
 import java.time.Duration
 import java.time.temporal.ChronoUnit
 
@@ -20,17 +21,17 @@ object RestHelper {
         .build()
 
     @Suppress("UNCHECKED_CAST")
-    fun <R> invokeGet(url: String): R = invokeHttp(url, HttpMethod.GET, null)
+    fun <R> invokeGet(url: String): R? = invokeHttp(url, HttpMethod.GET, null)
 
     @Suppress("UNCHECKED_CAST")
-    fun <R, T> invokePost(url: String, body: T): R = invokeHttp(url, HttpMethod.POST, body)
+    fun <R, T> invokePost(url: String, body: T): R? = invokeHttp(url, HttpMethod.POST, body)
 
     @Suppress("UNCHECKED_CAST")
     private fun <R, T> invokeHttp(
         url: String,
         httpMethod: HttpMethod,
         body: T?
-    ): R {
+    ): R? {
         log.info("Making a request to $url")
         val headers = HttpHeaders()
         headers.contentType = MediaType.APPLICATION_JSON
@@ -41,16 +42,28 @@ object RestHelper {
             HttpEntity(body, headers)
         }
 
-        val response = restTemplate.exchange(
-            url,
-            httpMethod,
-            httpEntity,
-            object : ParameterizedTypeReference<HashMap<String, Any>>() {}
-        )
-        log.debug(response.toString())
-        log.info("Got a response from $url, ok = ${response.body!!["ok"]}")
+        val response: ResponseEntity<HashMap<String, Any>> = try {
+            restTemplate.exchange(
+                url,
+                httpMethod,
+                httpEntity,
+                object : ParameterizedTypeReference<HashMap<String, Any>>() {}
+            )
+        } catch (e: Exception) {
+            log.error("Failed to make a $httpMethod request to $url", e)
+            log.debug("Body: $body")
+            throw RuntimeException(e)
+        }
 
-        return response.body!!["result"] as R
+        log.debug(response.toString())
+        val ok = response.body!!["ok"]
+        log.info("Got a response from $url, ok = $ok")
+
+        return if (ok as Boolean) {
+            response.body!!["result"] as R
+        } else {
+            null
+        }
     }
 }
 
