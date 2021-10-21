@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component
 @Component
 class CommandsInitializer(
     private val telegramApi: TelegramApi
-): InitializingBean {
+) : InitializingBean {
 
     private val log = LoggerFactory.getLogger(this::class.java)
 

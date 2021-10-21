@@ -4,7 +4,7 @@ import com.ssanchozzz.telebreak.domain.BreakCalculator
 import com.ssanchozzz.telebreak.domain.Message
 import com.ssanchozzz.telebreak.domain.Update
 import com.ssanchozzz.telebreak.rest.helper.Commands.perifCommand
-import kotlinx.coroutines.newSingleThreadContext
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.InitializingBean
@@ -28,7 +28,7 @@ class MessagesProcessor(
 
     private var offset: Int = 0
 
-    override fun afterPropertiesSet() {
+    override fun afterPropertiesSet() = runBlocking {
         when (protocol) {
             "webhook" -> {
                 log.info("Registering a webhook")
@@ -38,7 +38,7 @@ class MessagesProcessor(
                 log.info("Deleting webhook")
                 telegramApi.deleteWebhook()
                 log.info("Starting long polling")
-                runBlocking(newSingleThreadContext("Long polling thread")) {
+                launch {
                     startGettingUpdates()
                 }
             }
@@ -46,6 +46,7 @@ class MessagesProcessor(
                 "Unknown protocol, bot will do nothing! Please setup telegram.bot.protocol to either longpolling or webhook"
             )
         }
+        log.info("Message processor initialization completed successfully")
     }
 
     private fun startGettingUpdates(): Unit? {

@@ -1,7 +1,15 @@
 package com.ssanchozzz.telebreak.domain
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.annotation.JsonProperty
 
+@JsonIgnoreProperties(ignoreUnknown = true)
+data class TelegramApiResponse<T>(
+    @JsonProperty("ok") val ok: Boolean,
+    @JsonProperty("result") val result: T
+)
+
+@JsonIgnoreProperties(ignoreUnknown = true)
 data class User(
     @JsonProperty("id") val id: Int,
     @JsonProperty("is_bot") val isBot: Boolean,
@@ -14,6 +22,7 @@ data class User(
     @JsonProperty("supports_inline_queries") val supportsInlineQueries: Boolean?
 )
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 data class Chat(
     @JsonProperty("id") val id: Int,
     @JsonProperty("first_name") val firstName: String?,
@@ -22,11 +31,13 @@ data class Chat(
     @JsonProperty("type") val type: String
 )
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 data class Update(
     @JsonProperty("update_id") val id: Int,
     @JsonProperty("message") val message: Message?
 )
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 data class Message(
     @JsonProperty("message_id") val id: Int,
     @JsonProperty("from") val user: User,
@@ -35,6 +46,7 @@ data class Message(
     @JsonProperty("text") val text: String?
 )
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 data class Command(
     @JsonProperty("command") val command: String,
     @JsonProperty("description") val description: String

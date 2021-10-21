@@ -84,8 +84,8 @@ class BreakCalculator(
                 State.CLASSES_NOT_STARTED,
                 "Classes not yet started"
             )
-        } else if (insertionPoint == schedule.size
-            && MINUTES.between(schedule.last(), referenceDateTime) > classDurationMinutes
+        } else if (insertionPoint == schedule.size &&
+            MINUTES.between(schedule.last(), referenceDateTime) > classDurationMinutes
         ) {
             return Result(
                 State.CLASSES_FINISHED,
@@ -99,10 +99,12 @@ class BreakCalculator(
                 State.CLASS,
                 "It's class now, next break is in %s minutes",
                 listOf(
-                    (classDurationMinutes - MINUTES.between(
-                        previousClassStart,
-                        referenceDateTime
-                    )).toInt().toString()
+                    (
+                        classDurationMinutes - MINUTES.between(
+                            previousClassStart,
+                            referenceDateTime
+                        )
+                        ).toInt().toString()
                 )
             )
         }

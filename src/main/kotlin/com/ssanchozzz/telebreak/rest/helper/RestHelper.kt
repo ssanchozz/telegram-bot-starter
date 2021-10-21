@@ -1,5 +1,6 @@
 package com.ssanchozzz.telebreak.rest.helper
 
+import com.ssanchozzz.telebreak.domain.TelegramApiResponse
 import org.slf4j.LoggerFactory
 import org.springframework.boot.web.client.RestTemplateBuilder
 import org.springframework.core.ParameterizedTypeReference
@@ -21,49 +22,56 @@ object RestHelper {
         .build()
 
     @Suppress("UNCHECKED_CAST")
-    fun <R> invokeGet(url: String): R? = invokeHttp(url, HttpMethod.GET, null)
+    fun <R> invokeGet(
+        url: String,
+        typeReference: ParameterizedTypeReference<TelegramApiResponse<R>>
+    ): R? = invokeHttp(url, HttpMethod.GET, typeReference, null)
 
     @Suppress("UNCHECKED_CAST")
-    fun <R, T> invokePost(url: String, body: T): R? = invokeHttp(url, HttpMethod.POST, body)
+    fun <R, T> invokePost(
+        url: String,
+        typeReference: ParameterizedTypeReference<TelegramApiResponse<R>>,
+        body: T
+    ): R? = invokeHttp(url, HttpMethod.POST, typeReference, body)
 
     @Suppress("UNCHECKED_CAST")
     private fun <R, T> invokeHttp(
         url: String,
         httpMethod: HttpMethod,
-        body: T?
+        typeReference: ParameterizedTypeReference<TelegramApiResponse<R>>,
+        sendBody: T?
     ): R? {
         log.info("Making a request to $url")
         val headers = HttpHeaders()
         headers.contentType = MediaType.APPLICATION_JSON
 
-        val httpEntity = if (body == null) {
+        val httpEntity = if (sendBody == null) {
             HttpEntity(headers)
         } else {
-            HttpEntity(body, headers)
+            HttpEntity(sendBody, headers)
         }
 
-        val response: ResponseEntity<HashMap<String, Any>> = try {
+        val response: ResponseEntity<TelegramApiResponse<R>> = try {
             restTemplate.exchange(
                 url,
                 httpMethod,
                 httpEntity,
-                object : ParameterizedTypeReference<HashMap<String, Any>>() {}
+                typeReference
             )
         } catch (e: Exception) {
             log.error("Failed to make a $httpMethod request to $url", e)
-            log.debug("Body: $body")
+            log.debug("Body: $sendBody")
             throw RuntimeException(e)
         }
 
         log.debug(response.toString())
-        val ok = response.body!!["ok"]
+        val ok = response.body!!.ok
         log.info("Got a response from $url, ok = $ok")
 
-        return if (ok as Boolean) {
-            response.body!!["result"] as R
+        return if (ok) {
+            response.body!!.result
         } else {
             null
         }
     }
 }
-

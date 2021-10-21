@@ -7,5 +7,5 @@ import org.springframework.boot.runApplication
 class TeleBreakApplication
 
 fun main(args: Array<String>) {
-	runApplication<TeleBreakApplication>(*args)
+    runApplication<TeleBreakApplication>(*args)
 }
