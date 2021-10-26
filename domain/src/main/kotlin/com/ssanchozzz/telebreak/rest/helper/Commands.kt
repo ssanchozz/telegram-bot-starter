@@ -1,6 +1,6 @@
 package com.ssanchozzz.telebreak.rest.helper
 
-import com.ssanchozzz.telebreak.domain.Command
+import com.ssanchozzz.telebreak.rest.Command
 
 object Commands {
 

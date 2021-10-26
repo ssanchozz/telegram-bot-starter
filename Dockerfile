@@ -6,11 +6,11 @@ WORKDIR /app
 
 COPY .mvn/ .mvn
 COPY mvnw pom.xml ./
+COPY domain ./domain
+COPY telegram-api ./telegram-api
 
 RUN chmod +x mvnw
 
 RUN ./mvnw dependency:go-offline
-
-COPY src ./src
 
 CMD ["./mvnw", "spring-boot:run", "-Dspring-boot.run.jvmArguments=\"-Xmx512m\""]

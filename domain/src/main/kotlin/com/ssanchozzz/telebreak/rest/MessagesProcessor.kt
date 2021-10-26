@@ -1,8 +1,7 @@
 package com.ssanchozzz.telebreak.rest
 
+import com.ssanchozzz.telebreak.api.TelegramApi
 import com.ssanchozzz.telebreak.domain.BreakCalculator
-import com.ssanchozzz.telebreak.domain.Message
-import com.ssanchozzz.telebreak.domain.Update
 import com.ssanchozzz.telebreak.rest.helper.Commands.perifCommand
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -79,7 +78,7 @@ class MessagesProcessor(
 
         val text = message.text
 
-        if (text.startsWith(perifCommand.command)) {
+        if (text!!.startsWith(perifCommand.command)) {
             processPerifCommand(message)
         } else if (text.startsWith("/")) {
             log.info("Unknown command $message")

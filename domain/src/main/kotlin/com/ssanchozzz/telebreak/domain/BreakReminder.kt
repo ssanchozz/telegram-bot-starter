@@ -1,7 +1,7 @@
 package com.ssanchozzz.telebreak.domain
 
+import com.ssanchozzz.telebreak.api.TelegramApi
 import com.ssanchozzz.telebreak.rest.MessagesProcessor
-import com.ssanchozzz.telebreak.rest.TelegramApi
 import org.slf4j.LoggerFactory
 import org.springframework.scheduling.annotation.EnableScheduling
 import org.springframework.scheduling.annotation.Scheduled

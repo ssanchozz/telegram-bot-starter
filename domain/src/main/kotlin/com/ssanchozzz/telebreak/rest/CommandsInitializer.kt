@@ -1,5 +1,6 @@
 package com.ssanchozzz.telebreak.rest
 
+import com.ssanchozzz.telebreak.api.TelegramApi
 import com.ssanchozzz.telebreak.rest.helper.Commands.perifCommand
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.InitializingBean

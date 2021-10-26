@@ -1,6 +1,5 @@
-package com.ssanchozzz.telebreak.rest.helper
+package com.ssanchozzz.telebreak.rest
 
-import com.ssanchozzz.telebreak.domain.TelegramApiResponse
 import org.slf4j.LoggerFactory
 import org.springframework.boot.web.client.RestTemplateBuilder
 import org.springframework.core.ParameterizedTypeReference
