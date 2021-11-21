@@ -1,5 +1,6 @@
 package com.ssanchozzz.telebreak.rest
 
+import com.ssanchozzz.telebreak.api.MessagesProcessor
 import com.ssanchozzz.telebreak.api.TelegramApi
 import com.ssanchozzz.telebreak.domain.BreakCalculator
 import com.ssanchozzz.telebreak.rest.helper.Commands.perifCommand
@@ -19,7 +20,7 @@ class MessagesProcessor(
     val breakCalculator: BreakCalculator,
     @Value("\${telegram.bot.protocol}") val protocol: String,
     @Value("\${telegram.bot.webhook}") val webhookUrl: String
-) : InitializingBean {
+) : MessagesProcessor, InitializingBean {
 
     private val log = LoggerFactory.getLogger(this::class.java)
 
@@ -113,7 +114,7 @@ class MessagesProcessor(
         }
     }
 
-    internal fun processWebhookUpdate(update: Update) {
+    override fun process(update: Update) {
         processUpdate(update)
         offset = update.id + 1
     }
