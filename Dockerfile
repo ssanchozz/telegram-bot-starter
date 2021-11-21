@@ -13,4 +13,4 @@ RUN chmod +x mvnw
 
 RUN ./mvnw dependency:go-offline
 
-CMD ["./mvnw", "-pl domain", "-am", "spring-boot:run", "-Dspring-boot.run.jvmArguments=\"-Xmx512m\""]
+CMD ["./mvnw", "spring-boot:run", "-Dspring-boot.run.jvmArguments=\"-Xmx512m\""]
