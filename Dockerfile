@@ -6,7 +6,8 @@ WORKDIR /app
 
 COPY .mvn/ .mvn
 COPY mvnw pom.xml ./
-COPY domain domain/
+COPY service service/
+COPY bot-example bot-example/
 COPY telegram-api telegram-api/
 
 RUN chmod +x mvnw
